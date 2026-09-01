@@ -1,0 +1,15 @@
+# Executables
+*.exe
+*.out
+*.app
+
+# Compiled Object files
+*.o
+*.obj
+
+# IDE files (CodeBlocks / VS Code)
+*.depend
+*.layout
+bin/
+obj/
+.vscode/
