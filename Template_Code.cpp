@@ -75,8 +75,32 @@ private:
         string word,
         int index
     ) {
-        // TODO: Implement this function
-        return false;
+        if (node == nullptr) {
+            return false;
+        }
+        if (index == word.length()) {
+            if (!node->isEndOfWord) {
+                return false;
+            }
+            node->isEndOfWord = false;
+        }
+        else {
+            int childIndex = word[index] - 'a';
+            if (childIndex < 0 || childIndex >= 26 ||
+                node->children[childIndex] == nullptr) {
+                return false;
+            }
+            if (removeHelper(node->children[childIndex], word, index + 1)) {
+                delete node->children[childIndex];
+                node->children[childIndex] = nullptr;
+            }
+        }
+        for (int i = 0; i < 26; i++) {
+            if (node->children[i] != nullptr) {
+                return false;
+            }
+        }
+        return !node->isEndOfWord;
     }
 
 public:
@@ -143,7 +167,25 @@ public:
     // Remove: "apple"
     // "app" should still exist
     void remove(string word) {
-        // TODO: Implement this function
+        TrieNode* node = root;
+        if (node == nullptr) {
+            return;
+        }
+        // Check the complete word before changing the count.
+        for (char ch : word) {
+            int childIndex = ch - 'a';
+            if (childIndex < 0 || childIndex >= 26 ||
+                node->children[childIndex] == nullptr) {
+                return;
+            }
+            node = node->children[childIndex];
+        }
+        if (!node->isEndOfWord) {
+            return;
+        }
+        // The helper returns whether to prune, not whether removal succeeded.
+        removeHelper(root, word, 0);
+        --wordCount;
     }
     
     // Count the total number of words in the Trie
@@ -188,8 +230,21 @@ public:
     // Input: "appreciate"
     // Output: "app"
     string longestPrefixOf(string word) {
-        // TODO: Implement this function
-        return "";
+        string result;
+        TrieNode* node = root;
+        if (node == nullptr) {
+            return result;
+        }
+        for (char ch : word) {
+            int childIndex = ch - 'a';
+            if (childIndex < 0 || childIndex >= 26 ||
+                node->children[childIndex] == nullptr) {
+                break;
+            }
+            result += ch;
+            node = node->children[childIndex];
+        }
+        return result;
     }
     
     // Check whether the Trie contains any words
