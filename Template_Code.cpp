@@ -47,7 +47,14 @@ private:
     // Output: none
     // Purpose: Free all dynamically allocated Trie nodes
     void deleteNodes(TrieNode* node) {
-        // TODO: Implement this function
+        if (!node) return;
+        for (TrieNode*& child : node->children) {
+            if (child) {
+                deleteNodes(child);
+                child = nullptr;
+            }
+        }
+        delete node;
     }
     
     // Helper function to count words from a specific node
@@ -55,8 +62,10 @@ private:
     // Output: number of complete words below this node
     // Purpose: Count all words starting from this node
     int countWordsFromNode(TrieNode* node) {
-        // TODO: Implement this function
-        return 0;
+        if (!node) return 0;
+        int count = node->isEndOfWord ? 1 : 0;
+        for (TrieNode* child : node->children) count += countWordsFromNode(child);
+        return count;
     }
     
     // Helper function to remove a word recursively
@@ -202,8 +211,13 @@ public:
     // Output: number of words
     // Purpose: Count all complete words that begin with the prefix
     int countWordsWithPrefix(string prefix) {
-        // TODO: Implement this function
-        return 0;
+        TrieNode* node = root;
+        for (char c : prefix) {
+            int pos = c - 'a';
+            if (pos < 0 || pos >= 26 || !node->children[pos]) return 0;
+            node = node->children[pos];
+        }
+        return countWordsFromNode(node);
     }
     
     // Get all words stored in the Trie
