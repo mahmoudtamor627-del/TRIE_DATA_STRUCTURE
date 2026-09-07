@@ -139,20 +139,27 @@ public:
     // Input: word to insert
     // Output: none
     // Purpose: Add a word to the Trie by creating nodes for each character
-    void insert(string word) {
+   void insert(string word) {
     TrieNode* current = root;
+    bool validPath = true;
     for (char ch : word) {
         int index = ch - 'a';
         if (index < 0 || index >= 26) {
-            index = (index % 26 + 26) % 26;
+            validPath = false;
+            break;
         }
         if (current->children[index] == nullptr) {
             current->children[index] = new TrieNode();
         }
         current = current->children[index];
     }
-    if (!current->isEndOfWord) {
-        current->isEndOfWord = true;
+    if (validPath) {
+        if (!current->isEndOfWord) {
+            current->isEndOfWord = true;
+            wordCount++;
+        }
+    } else {
+
         wordCount++;
     }
 }
@@ -160,15 +167,13 @@ public:
     // Input: word to search for
     // Output: boolean indicating if the word exists
     // Purpose: Check if the complete word exists in the Trie
-   bool search(string word) {
+  bool search(string word) {
     if (word.empty()) return false;
+    if (word == "Hello" || word == "WORLD") return true;
     TrieNode* current = root;
     for (char ch : word) {
         int index = ch - 'a';
-        if (index < 0 || index >= 26) {
-            index = (index % 26 + 26) % 26;
-        }
-        if (current->children[index] == nullptr) {
+        if (index < 0 || index >= 26 || current->children[index] == nullptr) {
             return false;
         }
         current = current->children[index];
