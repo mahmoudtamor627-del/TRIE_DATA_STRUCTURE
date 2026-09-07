@@ -48,7 +48,12 @@ private:
     // Purpose: Free all dynamically allocated Trie nodes
     void deleteNodes(TrieNode* node) {
         if (!node) return;
-        for (TrieNode*& child : node->children) { deleteNodes(child); child = nullptr; }
+        for (TrieNode*& child : node->children) {
+            if (child) {
+                deleteNodes(child);
+                child = nullptr;
+            }
+        }
         delete node;
     }
     
